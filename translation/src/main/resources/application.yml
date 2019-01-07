@@ -1,0 +1,6 @@
+server:
+  port: 8081
+
+google:
+  credentials:
+    path: /client_secret.json

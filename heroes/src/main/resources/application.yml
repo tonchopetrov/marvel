@@ -1,0 +1,29 @@
+server:
+  port: 8080
+  servlet-path: /api/marvel
+
+spring:
+  data:
+    mongodb:
+      database: marvel
+      host: localhost
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
+
+marvel:
+  key:
+#    public: 98785a94bf5fb040a4d671a96ef111d2
+#    private: 1d84f6edc503216070d495be39c90eb4ea6a34aa
+    public: 2df9b7b2165f4fca8e4290a797f3d316
+    private: 6b71833bfe1f028b6690bee6152c677b8a99aa20
+  batchSize: 100
+  heroUrl: http://gateway.marvel.com/v1/public/characters
+
+google:
+  credentials:
+    path: /client_secret.json
+
+encoding: UTF-8
+
+hash:
+    algorithm: MD5

@@ -1,0 +1,18 @@
+rabbitmq:
+  image: rabbitmq:management
+  container_name: rabbitmq
+  ports:
+  - 15672:15672
+  - 5672:5672
+  hostname: my-rabbit
+  #environment:
+   # - RABBITMQ_DEFAULT_PASS=admin
+    #- RABBITMQ_DEFAULT_USER=admin
+
+mongo:
+  image: mongo
+  container_name: mongo
+  ports:
+    - 27017:27017
+
+

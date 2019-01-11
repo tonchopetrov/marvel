@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -71,7 +72,7 @@ public class MarvelServiceImpl implements MarvelService {
     }
 
 //  MAX 3000 request per day
-//    @PostConstruct
+    @PostConstruct
     private void init() throws IOException {
 
         //get first 100 heroes

@@ -9,6 +9,7 @@ public class MessageDTO {
 
     private String language;
     private String text;
+    private MessageStatus status;
 
     @Override
     public String toString() {
@@ -16,5 +17,9 @@ public class MessageDTO {
                 "language='" + language + '\'' +
                 ", text='" + text + '\'' +
                 '}';
+    }
+
+    public enum MessageStatus{
+        SUCCESS,ERROR;
     }
 }

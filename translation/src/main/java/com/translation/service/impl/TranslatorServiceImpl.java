@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.concurrent.TimeoutException;
 
 
 @Slf4j
@@ -49,18 +48,28 @@ public class TranslatorServiceImpl implements TranslatorService {
              public String handleStringCall(String request) {
 
                  String translatedPower = null;
+                 MessageDTO messageDTO = null;
                  try {
-                     MessageDTO messageDTO = objectMapper.readValue(request, new TypeReference<MessageDTO>() {
+                     messageDTO = objectMapper.readValue(request, new TypeReference<MessageDTO>() {
                      });
 
                      if(messageDTO != null){
                          translatedPower = translate(messageDTO.getLanguage(), messageDTO.getText());
+                         if(translatedPower != null){
+                             messageDTO.setText(translatedPower);
+                             messageDTO.setStatus(MessageDTO.MessageStatus.SUCCESS);
+
+                             return objectMapper.writeValueAsString(messageDTO);
+                         }else {
+                             messageDTO.setStatus(MessageDTO.MessageStatus.ERROR);
+                             return objectMapper.writeValueAsString(messageDTO);
+                         }
                      }
 
                  } catch (IOException e) {
                      log.error("TranslatorService delivery message error: ",e.getMessage());
                  }
-                 return translatedPower;
+                 return null;
              }
          };
          server.mainloop();
@@ -98,6 +107,5 @@ public class TranslatorServiceImpl implements TranslatorService {
 
         return  translateOptions.getDefaultInstance().getService();
     }
-
 
 }

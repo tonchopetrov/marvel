@@ -9,12 +9,8 @@ import com.heroes.model.Hero;
 import com.heroes.model.HeroesData;
 import com.heroes.repository.HeroRepository;
 import com.heroes.service.MarvelService;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.RpcClient;
+import com.heroes.service.TranslatorService;
 import lombok.extern.slf4j.Slf4j;
-import ms_common.messaging.config.RabbitConstants;
-import ms_common.messaging.dto.MessageDTO;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -23,9 +19,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,7 +32,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
@@ -65,21 +59,19 @@ public class MarvelServiceImpl implements MarvelService {
     private String algorithm;
 
     private HeroRepository repository;
+    private TranslatorService translatorService;
     private ObjectMapper objectMapper;
-    private Channel channel;
-    private Connection connection;
-    RpcClient rpcClient;
 
 
     @Autowired
-    public MarvelServiceImpl(HeroRepository repository,Connection connection) {
+    public MarvelServiceImpl(HeroRepository repository, TranslatorService translatorService, ObjectMapper objectMapper) {
         this.repository = repository;
+        this.translatorService = translatorService;
         this.objectMapper = new ObjectMapper();
-        this.connection = connection;
     }
 
 //  MAX 3000 request per day
-    @PostConstruct
+//    @PostConstruct
     private void init() throws IOException {
 
         //get first 100 heroes
@@ -114,9 +106,6 @@ public class MarvelServiceImpl implements MarvelService {
             }
 
         });
-
-        rpcClient = new RpcClient(connection.createChannel(), "",RabbitConstants.REQUEST_QUEUE_NAME);
-
     }
 
     @Override
@@ -187,9 +176,9 @@ public class MarvelServiceImpl implements MarvelService {
         HeroWithPowerDTO resultDto = new HeroWithPowerDTO();
         BeanUtils.copyProperties(hero,resultDto);
 
-        String translatedPower = translatePower(language, sb.toString());
+        String translatedPower = translatorService.translate(language, sb.toString());
 
-        if(!translatedPower.equals("")){
+        if(!StringUtils.isEmpty(translatedPower)){
 
             resultDto.setPower(translatedPower);
             return resultDto;
@@ -198,18 +187,22 @@ public class MarvelServiceImpl implements MarvelService {
         return resultDto;
     }
 
-    private String translatePower(String language, String text) throws IOException, TimeoutException {
+//    private String translatePower(String language, String text) throws IOException, TimeoutException {
+//
+//        MessageDTO messageDTO = new MessageDTO();
+//        messageDTO.setText(text);
+//        messageDTO.setLanguage(language);
+//
+//        channel = connection.createChannel();
+//        rpcClient = new RpcClient(channel, "",RabbitConstants.REQUEST_QUEUE_NAME);
+//
+//        String power = rpcClient.stringCall(objectMapper.writeValueAsString(messageDTO));
+//
+//        log.debug("Translated power: {}",power);
+//
+//        return power;
+//    }
 
-        MessageDTO messageDTO = new MessageDTO();
-        messageDTO.setText(text);
-        messageDTO.setLanguage(language);
-
-        String power = rpcClient.stringCall(objectMapper.writeValueAsString(messageDTO));
-
-        log.debug("Translated power: {}",power);
-
-        return  power;
-    }
     private String getHeroWikiUrl(HeroDataDTO hero){
         AtomicReference<String> heroWikiUrl = new AtomicReference<>();
         hero.getUrls().forEach(u -> {
@@ -325,12 +318,5 @@ public class MarvelServiceImpl implements MarvelService {
 //        publisher.publishMessage(messageDTO,RabbitConstants.REQUEST_QUEUE_NAME);
 //
 //    }
-
-    @PreDestroy
-    public void stop() throws IOException, TimeoutException {
-        channel.close();
-        connection.close();
-        rpcClient.close();
-    }
 
 }

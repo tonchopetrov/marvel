@@ -1,14 +1,18 @@
 server:
-  port: 8080
+  port: 8081
   servlet-path: /api/marvel
 
 spring:
   data:
     mongodb:
       database: marvel
-      host: localhost
+      host: ${MONGO_HOST:localhost}
+      port: 27017
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
+
+rabbitmq:
+  hostname: ${RABBIT_HOST:localhost}
 
 marvel:
   key:

@@ -1,6 +1,9 @@
 server:
-  port: 8081
+  port: 8082
 
 google:
   credentials:
     path: /client_secret.json
+
+rabbitmq:
+  hostname: ${RABBIT_HOST:localhost}

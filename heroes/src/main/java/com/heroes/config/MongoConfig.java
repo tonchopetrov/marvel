@@ -15,21 +15,21 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableMongoRepositories(basePackageClasses = HeroRepository.class)
 public class MongoConfig {
 
-    @Value("$(spring.data.mongodb.host}")
+    @Value("${spring.data.mongodb.host}")
     private String host;
 
-    @Value("$(spring.data.mongodb.port}")
+    @Value("${spring.data.mongodb.port}")
     private String port;
 
-    @Value("$(spring.data.mongodb.database}")
+    @Value("${spring.data.mongodb.database}")
     private String database;
 
     @Bean
     public MongoTemplate mongoTemplate() throws Exception {
         MongoProperties mongoProperties = new MongoProperties();
-        mongoProperties.setDatabase("marvel");
-        mongoProperties.setHost("localhost");
-        mongoProperties.setPort(27017);
+        mongoProperties.setDatabase(database);
+        mongoProperties.setHost(host);
+        mongoProperties.setPort(Integer.valueOf(port));
 
         return new MongoTemplate(factory(mongoProperties));
     }

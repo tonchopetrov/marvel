@@ -20,7 +20,6 @@ public class HeroesStarter {
 		log.info("Service is  Starting !!!");
 		SpringApplication.run(HeroesStarter.class, args);
 		log.info("Service Started !!!");
-
     }
 
 

@@ -1,0 +1,40 @@
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: rabbit
+#  labels:
+#    app: rabbit
+#spec:
+#  containers:
+#    - name: rabbitmq
+#      image: rabbitmq:management
+#      ports:
+#        - name: rabbit-port
+#          containerPort: 5672
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: rabbitmq
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: rabbit
+    spec:
+      containers:
+        - name: rabbit
+          image: rabbitmq:management
+          ports:
+            - containerPort: 5672
+              name: port-5672
+          env:
+            - name: RABBITMQ_HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: RABBIT_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP

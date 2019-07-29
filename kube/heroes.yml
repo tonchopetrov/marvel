@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: heroes
+spec:
+  replicas:
+  template:
+    metadata:
+      labels:
+        app: heroes
+    spec:
+      containers:
+        - name: dev-translation
+          image: petrovtoncho/translation
+          ports:
+            - name: t-port
+              containerPort: 8082
+          env:
+            - name: RABBIT_HOST
+              value: rabbit-service
+            - name: MONGO_HOST
+              value: mongo-service

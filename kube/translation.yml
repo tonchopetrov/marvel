@@ -1,0 +1,37 @@
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: translation
+#  labels:
+#    app: translation
+#spec:
+#  containers:
+#    - name: dev-translation
+#      image: petrovtoncho/translation
+#      ports:
+#        - containerPort: 8082
+#          name: t-port
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: translation
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: translation
+    spec:
+      containers:
+        - name: dev-translation
+          image: petrovtoncho/translation
+          ports:
+            - name: t-port
+              containerPort: 8082
+          env:
+            - name: RABBITMQ_HOSTNAME
+              value: rabbit-service
+            - name: MONGO_HOSTNAME
+              value: mongo-service
+

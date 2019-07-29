@@ -72,7 +72,7 @@ public class MarvelServiceImpl implements MarvelService {
     }
 
 //  MAX 3000 request per day
-    @PostConstruct
+//    @PostConstruct
     private void init() throws IOException {
 
         //get first 100 heroes

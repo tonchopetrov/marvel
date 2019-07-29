@@ -15,10 +15,13 @@ import ms_common.messaging.config.RabbitConstants;
 import ms_common.messaging.dto.MessageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Date;
 
 
 @Slf4j
@@ -107,5 +110,4 @@ public class TranslatorServiceImpl implements TranslatorService {
 
         return  translateOptions.getDefaultInstance().getService();
     }
-
 }

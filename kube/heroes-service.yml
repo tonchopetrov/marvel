@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: heroes-service
+spec:
+  ports:
+    - port: 8081
+      nodePort: 8081
+      targetPort: h-port
+      protocol: TCP
+  selector:
+    app: heroes
+  type: NodePort
+

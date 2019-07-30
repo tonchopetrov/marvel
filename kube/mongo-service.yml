@@ -10,4 +10,4 @@ spec:
       protocol: TCP
   selector:
     app: mongo
-  type: NodePort
+  type: LoadBalancer

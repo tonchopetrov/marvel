@@ -1,23 +1,12 @@
-#apiVersion: v1
-#kind: Pod
-#metadata:
-#  name: mongo
-#  labels:
-#    app: mongo
-#spec:
-#  containers:
-#    - name: mongo
-#      image: mongo
-#      ports:
-#        - name: mongo-port
-#          containerPort: 27017
-
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mongo
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: mongo
   template:
     metadata:
       labels:

@@ -10,5 +10,5 @@ spec:
       protocol: TCP
   selector:
     app: heroes
-  type: NodePort
+  type: LoadBalancer
 

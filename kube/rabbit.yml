@@ -1,23 +1,12 @@
-#apiVersion: v1
-#kind: Pod
-#metadata:
-#  name: rabbit
-#  labels:
-#    app: rabbit
-#spec:
-#  containers:
-#    - name: rabbitmq
-#      image: rabbitmq:management
-#      ports:
-#        - name: rabbit-port
-#          containerPort: 5672
-
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: rabbitmq
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: rabbit
   template:
     metadata:
       labels:

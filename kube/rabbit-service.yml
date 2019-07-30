@@ -10,4 +10,4 @@ spec:
       protocol: TCP
   selector:
     app: rabbit
-  type: NodePort
+  type: LoadBalancer

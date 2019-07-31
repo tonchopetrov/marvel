@@ -18,6 +18,18 @@ spec:
           ports:
             - name: t-port
               containerPort: 8082
+          readinessProbe:
+            httpGet:
+              port: t-port
+              path: /api/marvel/translation/isAlive
+            initialDelaySeconds: 15
+            timeoutSeconds: 30
+          livenessProbe:
+            httpGet:
+              port: t-port
+              path: /api/marvel/translation/isAlive
+            initialDelaySeconds: 15
+            timeoutSeconds: 30
           env:
             - name: RABBITMQ_HOSTNAME
               value: rabbit-service

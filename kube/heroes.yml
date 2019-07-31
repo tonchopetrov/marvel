@@ -18,6 +18,18 @@ spec:
           ports:
             - name: h-port
               containerPort: 8081
+          livenessProbe:
+            httpGet:
+              port: h-port
+              path: /api/marvel/heroes/isAlive
+            timeoutSeconds: 30
+            initialDelaySeconds: 15
+          readinessProbe:
+            httpGet:
+              port: h-port
+              path: /api/marvel/heroes/isAlive
+            initialDelaySeconds: 15
+            timeoutSeconds: 30
           env:
             - name: RABBITMQ_HOSTNAME
               value: rabbit-service

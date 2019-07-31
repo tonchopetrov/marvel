@@ -18,6 +18,18 @@ spec:
           ports:
             - containerPort: 27017
               name: mongo-port
+          livenessProbe:
+            httpGet:
+              path: /
+              port: mongo-port
+            initialDelaySeconds: 15
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              port: mongo-port
+              path: /
+            initialDelaySeconds: 15
+            timeoutSeconds: 30
           env:
             - name: MONGO_HOSTNAME
               valueFrom:

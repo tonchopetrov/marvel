@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: heroes-rules
+spec:
+  #  rules:
+  #    - host: test.com
+  #      http:
+  #        paths:
+  #          - path: /api/marvel/heroes
+  #            backend:
+  #              serviceName: heroes-service
+  #              servicePort: 8081
+  backend:
+    serviceName: heroes-service
+    servicePort: 8081

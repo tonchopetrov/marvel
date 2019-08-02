@@ -3,8 +3,9 @@ package com.heroes.service.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.heroes.dto.HeroDataDTO;
-import com.heroes.dto.HeroResponceDTO;
+import com.heroes.dto.HeroResponseDTO;
 import com.heroes.dto.HeroWithPowerDTO;
+import com.heroes.exception.HeroNotFoundException;
 import com.heroes.model.Hero;
 import com.heroes.model.HeroesData;
 import com.heroes.repository.HeroRepository;
@@ -23,6 +24,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.xml.bind.DatatypeConverter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -128,15 +130,15 @@ public class MarvelServiceImpl implements MarvelService {
     }
 
     @Override
-    public HeroResponceDTO getHeroById(String id) throws Exception {
+    public HeroResponseDTO getHeroById(String id) throws Exception {
 
         HeroesData data = getHero(id);
-        HeroResponceDTO reponseDTO = new HeroResponceDTO();
-        BeanUtils.copyProperties(data.getData().getResults().get(0),reponseDTO);
+        HeroResponseDTO responseDTO = new HeroResponseDTO();
+        BeanUtils.copyProperties(data.getData().getResults().get(0), responseDTO);
 
-        log.debug("Hero id: {}",reponseDTO.getId());
+        log.debug("Hero id: {}", responseDTO.getId());
 
-        return reponseDTO;
+        return responseDTO;
     }
 
     @Override
@@ -267,33 +269,40 @@ public class MarvelServiceImpl implements MarvelService {
         return parseHeroesData(stringUrl);
     }
 
-    private HeroesData getHero(String id) throws IOException {
+    private HeroesData getHero(String id) throws IOException, HeroNotFoundException {
         String stringUrl =   generateHeroesUrl(id,1);
-        HeroesData heroesData = parseHeroesData(stringUrl);
 
-        return heroesData;
+        return parseHeroesData(stringUrl);
     }
 
-    private HeroesData parseHeroesData(String stringUrl) throws IOException {
+    private HeroesData parseHeroesData(String stringUrl) throws IOException, HeroNotFoundException {
 
         String data  = readDataFromUrl(stringUrl);
-        HeroesData heroesData = objectMapper.readValue(data, new TypeReference<HeroesData>(){});
 
-        return  heroesData;
+        return objectMapper.readValue(data, new TypeReference<HeroesData>() {
+        });
     }
 
-    private String readDataFromUrl(String stringUrl) throws IOException{
+    private String readDataFromUrl(String stringUrl) throws IOException, HeroNotFoundException {
 
-        URL url = new URL(stringUrl);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setDoOutput(true);
-        connection.setInstanceFollowRedirects(false);
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setRequestProperty("charset", "utf-8");
-        connection.connect();
-        InputStream inStream = connection.getInputStream();
+        InputStream inStream;
+        try {
 
+            URL url = new URL(stringUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoOutput(true);
+            connection.setInstanceFollowRedirects(false);
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty("charset", "utf-8");
+            connection.connect();
+            inStream = connection.getInputStream();
+
+        } catch (FileNotFoundException e) {
+            log.error("Hero not found exception !");
+            // if hero wasn't found Marvel return FileNotFoundException
+            throw new HeroNotFoundException();
+        }
         return streamToString(inStream);
     }
 

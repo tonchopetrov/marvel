@@ -4,11 +4,16 @@ metadata:
   name: heroes-service
 spec:
   ports:
-    - port: 8081
+    - name: web
+      port: 8081
       nodePort: 8081
       targetPort: h-port
       protocol: TCP
+    - name: debug
+      protocol: TCP
+      nodePort: 5005
+      targetPort: 5005
+      port: 5005
   selector:
     app: heroes
   type: LoadBalancer
-

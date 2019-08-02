@@ -14,10 +14,12 @@ spec:
     spec:
       containers:
         - name: dev-heroes
-          image: petrovtoncho/heroes
+          image: petrovtoncho/heroes:latest
           ports:
             - name: h-port
               containerPort: 8081
+            - name: d-port-heroes
+              containerPort: 5005
           livenessProbe:
             httpGet:
               port: h-port
@@ -35,3 +37,7 @@ spec:
               value: rabbit-service
             - name: MONGO_HOSTNAME
               value: mongo-service
+            - name: "JAVA_ENABLE_DEBUG"
+              value: "true"
+            - name: JAVA_DEBUG_PORT
+              value: "5005"

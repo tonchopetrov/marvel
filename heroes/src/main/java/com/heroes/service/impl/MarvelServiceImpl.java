@@ -132,9 +132,14 @@ public class MarvelServiceImpl implements MarvelService {
     @Override
     public HeroResponseDTO getHeroById(String id) throws Exception {
 
-        HeroesData data = getHero(id);
+//        HeroesData data = getHero(id);
+        Hero hero = repository.findOne(id);
+        if (hero == null) {
+            log.debug("Hero with id:{} wasn't found");
+            throw new HeroNotFoundException();
+        }
         HeroResponseDTO responseDTO = new HeroResponseDTO();
-        BeanUtils.copyProperties(data.getData().getResults().get(0), responseDTO);
+        BeanUtils.copyProperties(hero, responseDTO);
 
         log.debug("Hero id: {}", responseDTO.getId());
 

@@ -3,7 +3,7 @@ package com.heroes.test;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.heroes.controller.HeroControllerRQ;
-import com.heroes.dto.HeroResponceDTO;
+import com.heroes.dto.HeroResponseDTO;
 import com.heroes.dto.HeroWithPowerDTO;
 import com.heroes.service.TranslatorService;
 import org.junit.Assert;
@@ -78,23 +78,24 @@ public class MarvelServiceTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
-        HeroResponceDTO heroResponceDTO = objectMapper.readValue(mvcResult.getResponse().getContentAsByteArray(),
-                new TypeReference<HeroResponceDTO>(){});
+        HeroResponseDTO heroResponseDTO = objectMapper.readValue(mvcResult.getResponse().getContentAsByteArray(),
+                new TypeReference<HeroResponseDTO>() {
+                });
 
-        Assert.assertNotNull(heroResponceDTO);
-        Assert.assertEquals("3-D Man",heroResponceDTO.getName());
+        Assert.assertNotNull(heroResponseDTO);
+        Assert.assertEquals("3-D Man", heroResponseDTO.getName());
     }
 
     @Test()
     public void getHeroByIdNotFound() throws Exception {
 
         String heroId = "1111111111";
-        String heroPath =HeroControllerRQ.PATH+ HeroControllerRQ.ID_PATH.replace("{characterId}",heroId);
+        String heroPath = HeroControllerRQ.PATH + HeroControllerRQ.ID_PATH.replace("{characterId}", heroId);
 
         MvcResult mvcResult = this.mockMvc.perform(get(heroPath)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isInternalServerError())
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andReturn();
     }
 

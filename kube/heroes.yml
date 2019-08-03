@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: heroes
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: heroes
@@ -13,13 +13,16 @@ spec:
         app: heroes
     spec:
       containers:
-        - name: dev-heroes
+        - name: heroes
           image: petrovtoncho/heroes:latest
           ports:
             - name: h-port
               containerPort: 8081
             - name: d-port-heroes
               containerPort: 5005
+          resources:
+            requests:
+              cpu: 200m
           livenessProbe:
             httpGet:
               port: h-port
@@ -41,3 +44,17 @@ spec:
               value: "true"
             - name: JAVA_DEBUG_PORT
               value: "5005"
+---
+# before use autoscaling need to enable metrics server
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: heroes-as
+spec:
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: heroes
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 50

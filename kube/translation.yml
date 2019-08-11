@@ -13,7 +13,7 @@ spec:
         app: translation
     spec:
       containers:
-        - name: dev-translation
+        - name: translation
           image: petrovtoncho/translation
           ports:
             - name: t-port

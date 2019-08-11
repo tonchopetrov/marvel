@@ -39,3 +39,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
+          volumeMounts:
+            - name: database
+              mountPath: /home/mongo
+      volumes:
+        - name: database
+          persistentVolumeClaim:
+            claimName: mongo-claim

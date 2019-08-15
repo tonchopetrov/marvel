@@ -3,14 +3,23 @@ kind: PersistentVolume
 metadata:
   name: mongo-pv
   labels:
-    app: local
+    app: mongo-pv-local
 spec:
   volumeMode: Filesystem
   storageClassName: mongo-storage
+  persistentVolumeReclaimPolicy: Retain
   capacity:
     storage: 5Gi
   accessModes:
     - ReadWriteOnce
     - ReadWriteMany
-  hostPath:
+  local:
     path: /home/mongo
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - minikube

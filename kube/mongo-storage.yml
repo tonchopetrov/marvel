@@ -4,9 +4,9 @@ metadata:
   name: mongo-volume-config
 data:
   storageClassMap: |
-    local-ssd:
-        hostDir:  /mnt/local-storage/mongo
-        mountDir: /mnt/local-storage/mongo
+    mongo-storage:
+        hostDir:  /mnt/mongo
+        mountDir: /mnt/mongo
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass

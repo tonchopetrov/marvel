@@ -24,11 +24,19 @@ public class MongoConfig {
     @Value("${spring.data.mongodb.database}")
     private String database;
 
+    @Value("${spring.data.mongodb.username}")
+    private String username;
+
+    @Value("${spring.data.mongodb.password}")
+    private String pass;
+
     @Bean
     public MongoTemplate mongoTemplate() throws Exception {
         MongoProperties mongoProperties = new MongoProperties();
         mongoProperties.setDatabase(database);
         mongoProperties.setHost(host);
+        mongoProperties.setUsername(username);
+        mongoProperties.setPassword(pass.toCharArray());
         mongoProperties.setPort(Integer.valueOf(port));
 
         return new MongoTemplate(factory(mongoProperties));

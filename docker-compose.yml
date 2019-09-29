@@ -7,6 +7,8 @@ services:
     ports:
     - 15672:15672
     - 5672:5672
+    networks:
+      - marvel
     #environment:
      # - RABBITMQ_DEFAULT_PASS=admin
       #- RABBITMQ_DEFAULT_USER=admin
@@ -16,6 +18,11 @@ services:
     ports:
       - 27017:27017
     hostname: mongo
+    networks:
+      - marvel
+
+networks:
+  marvel:
 
 
 

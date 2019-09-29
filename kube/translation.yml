@@ -2,6 +2,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: translation
+  labels:
+    app: translation
+    teir: backend
+    verion: v1
+  annotations:
+    sidecar.istio.io/rewriteAppHTTPProbers: "true"
 spec:
   selector:
     matchLabels:

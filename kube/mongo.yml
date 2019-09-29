@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mongo
+  labels:
+    app: mongo
 spec:
   replicas: 1
   selector:
@@ -38,7 +40,7 @@ spec:
             - name: MONGO_HOSTNAME
               valueFrom:
                 fieldRef:
-                  fieldPath: status.podIP
+                  fieldPath: status.hostIP
             - name: MONGO_POD_IP
               valueFrom:
                 fieldRef:

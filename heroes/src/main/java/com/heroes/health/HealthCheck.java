@@ -11,6 +11,7 @@ public class HealthCheck {
 
     @GetMapping(path = "/isAlive")
     public ResponseEntity isAlive(){
-        return new ResponseEntity(null, HttpStatus.OK);
+
+        return new ResponseEntity("KYP: Keep yourselves positive", HttpStatus.OK);
     }
 }

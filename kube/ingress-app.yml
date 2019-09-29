@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-app
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - http:
+        paths:
+          - backend:
+              serviceName: mongo-service
+              servicePort: 27017
+    - http:
+        paths:
+          - backend:
+              serviceName: rabbit-service
+              servicePort: 5672
+    - http:
+        paths:
+          - backend:
+              serviceName: heroes-service
+              servicePort: 8081
+    - http:
+        paths:
+          - backend:
+              serviceName: translation-service
+              servicePort: 8082

@@ -1,0 +1,15 @@
+kubectl delete deployment,service rabbit rabbit-service heroes heroes-service translation translation-service
+
+kubectl delete -f heroes.yml
+kubectl delete -f rabbit.yml
+kubectl delete -f rabbit-service.yml
+
+kubectl delete hpa heroes-as
+
+kubectl delete -f ingress-app.yml
+#kubectl delete-f nginx-ingress-controller.yml
+
+./mongo-stop.yml
+
+kubectl delete -f app-gateway.yml
+kubectl delete -f app-virtual-service.yml

@@ -1,0 +1,37 @@
+#microk8s.enable ingress
+#microk8s.enable dns
+#microk8s.enable metrics-server
+#Traffic forward is blocked. Do this for a quick check
+
+sudo iptables -P FORWARD ACCEPT
+
+kubectl apply -f rabbit.yml
+kubectl apply -f rabbit-service.yml
+#kubectl apply -f <(istioctl kube-inject -f rabbit.yml)
+#kubectl apply -f <(istioctl kube-inject -f rabbit-service.yml)
+
+./mongo-start.yml
+
+#kubectl expose deployment mongo --name=mongo-service --port=27017 --target-port=27017 --type=LoadBalancer
+#kubectl expose deployment rabbit --name=rabbit-service --port=5672 --target-port=5672 --type=LoadBalancer
+
+echo "Sleep for 20 seconds durring mongo and rabbit will up."
+sleep 20
+
+#kubectl apply -f heroes.yml
+#kubectl apply -f heroes-service.yml
+
+kubectl apply -f <(istioctl kube-inject -f heroes.yml)
+kubectl apply -f <(istioctl kube-inject -f heroes-service.yml)
+
+#kubectl apply -f translation.yml
+#kubectl apply -f translation-service.yml
+kubectl apply -f <(istioctl kube-inject -f translation.yml)
+kubectl apply -f <(istioctl kube-inject -f translation-service.yml)
+
+#kubectl apply -f ingress-app.yml
+
+kubectl apply -f app-gateway.yml
+kubectl apply -f app-virtual-service.yml
+
+#kubectl expose deployment istio-egressgateway --name=istio-kyp --port=32222 --target-port=32222 --type=LoadBalancer --namespace=istion-system

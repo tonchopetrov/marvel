@@ -14,7 +14,7 @@ spec:
     - ReadWriteOnce
     - ReadWriteMany
   local:
-    path: /home/mongo
+    path: /home/tt/mongo
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -22,4 +22,4 @@ spec:
             - key: kubernetes.io/hostname
               operator: In
               values:
-                - minikube
+                - pop-os

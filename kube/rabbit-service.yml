@@ -3,11 +3,11 @@ kind: Service
 metadata:
   name: rabbit-service
 spec:
+  type: NodePort
   ports:
-    - port: 5672
+    - name: amqp
+      port: 5672
       nodePort: 5672
-      targetPort: port-5672
       protocol: TCP
   selector:
     app: rabbit
-  type: LoadBalancer

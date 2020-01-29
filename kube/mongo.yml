@@ -45,10 +45,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
-          volumeMounts:
-            - name: database
-              mountPath: /data/db
-      volumes:
-        - name: database
-          persistentVolumeClaim:
-            claimName: mongo-pvc
+#          volumeMounts:
+#            - name: database
+#              mountPath: /data/db
+#      volumes:
+#        - name: database
+#          persistentVolumeClaim:
+#            claimName: mongo-pvc

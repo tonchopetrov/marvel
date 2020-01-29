@@ -10,22 +10,23 @@ import com.google.cloud.translate.Translation;
 
 import com.rabbitmq.client.*;
 import com.translation.service.TranslatorService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ms_common.messaging.config.RabbitConstants;
+import ms_common.messaging.config.BrockerConstants;
+import ms_common.messaging.config.kafka.Listener;
 import ms_common.messaging.dto.MessageDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.Date;
 
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class TranslatorServiceImpl implements TranslatorService {
 
     @Value("${google.credentials.path}")
@@ -33,12 +34,12 @@ public class TranslatorServiceImpl implements TranslatorService {
 
     private static final String EN = "en";
 
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
+    private final ObjectMapper objectMapper;
+    private final Listener listener;
+
     private Connection connection;
 
-    @PostConstruct
+//    @PostConstruct
     public void init()  {
 
         handleDelivery();
@@ -47,7 +48,7 @@ public class TranslatorServiceImpl implements TranslatorService {
     private void handleDelivery()  {
 
      try{
-         StringRpcServer server = new StringRpcServer(connection.createChannel(), RabbitConstants.REQUEST_QUEUE_NAME) {
+         StringRpcServer server = new StringRpcServer(connection.createChannel(), BrockerConstants.REQUEST_QUEUE_NAME) {
              public String handleStringCall(String request) {
 
                  String translatedPower = null;
@@ -99,6 +100,26 @@ public class TranslatorServiceImpl implements TranslatorService {
             return result;
         }
 
+        return null;
+    }
+
+
+    @KafkaListener(topics = "t1")
+    @SendTo
+    public MessageDTO translatorListener(MessageDTO messageDTO){
+        try {
+//            String result = translate(messageDTO.getLanguage(),messageDTO.getText());
+            String result = "it`s translated !!!!!";
+            if(!StringUtils.isEmpty(result)){
+                messageDTO.setText(result);
+                messageDTO.setStatus(MessageDTO.MessageStatus.SUCCESS);
+
+                return messageDTO;
+            }
+        } catch (Exception e) {
+            messageDTO.setStatus(MessageDTO.MessageStatus.ERROR);
+            return messageDTO;
+        }
         return null;
     }
 

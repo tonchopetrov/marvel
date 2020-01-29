@@ -1,0 +1,7 @@
+kafka:
+  bootstrap-servers: 127.0.0.1
+  port: 9092
+  topics:
+    t1: t1
+    t2: t2
+  consumergroup: g1

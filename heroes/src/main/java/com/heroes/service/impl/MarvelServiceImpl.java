@@ -34,6 +34,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -63,7 +64,7 @@ public class MarvelServiceImpl implements MarvelService {
 
     private HeroRepository repository;
     private TranslatorService translatorService;
-    private ObjectMapper objectMapper;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
 
     @Autowired
@@ -133,8 +134,9 @@ public class MarvelServiceImpl implements MarvelService {
     public HeroResponseDTO getHeroById(String id) throws Exception {
 
 //        HeroesData data = getHero(id);
-        Hero hero = repository.findOne(id);
-        if (hero == null) {
+        Optional<Hero> hero = repository.findById(id);
+
+        if (!hero.isPresent()) {
             log.debug("Hero with id:{} wasn't found");
             throw new HeroNotFoundException();
         }
@@ -149,15 +151,15 @@ public class MarvelServiceImpl implements MarvelService {
     @Override
     public HeroWithPowerDTO extractCharacterPower(String id, String language) throws Exception {
 
-        Hero hero = repository.findOne(id);
+        Optional<Hero> hero = repository.findById(id);
 
-        if(hero == null){
+        if(!hero.isPresent()){
             return null;
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append(hero.getWikiUrl());
-        sb.append(URLEncoder.encode(hero.getName(), encoding));
+        sb.append(hero.get().getWikiUrl());
+        sb.append(URLEncoder.encode(hero.get().getName(), encoding));
 
         Document doc = null;
        try{
@@ -177,7 +179,7 @@ public class MarvelServiceImpl implements MarvelService {
                 String label = e.getElementsByClass("power-circle__label").text();
                 String rating = e.getElementsByClass("power-circle__rating").text();
                 sb.append(label);
-                sb.append(": "+rating+ " ");
+                sb.append(": ").append(rating).append(" ");
             }
         }
 
@@ -234,10 +236,9 @@ public class MarvelServiceImpl implements MarvelService {
 
         md.update(keys.getBytes());
         byte[] digest = md.digest();
-        String result = DatatypeConverter
-                .printHexBinary(digest).toLowerCase();
 
-        return result;
+        return DatatypeConverter
+                .printHexBinary(digest).toLowerCase();
     }
 
     private String generateHeroesUrl(String id, int offset){
@@ -312,8 +313,7 @@ public class MarvelServiceImpl implements MarvelService {
     }
 
     private  String streamToString(InputStream inputStream) {
-        String text = new Scanner(inputStream, encoding).useDelimiter("\\Z").next();
-        return text;
+        return new Scanner(inputStream, encoding).useDelimiter("\\Z").next();
     }
 
 //    private void publishMessage(String language,String message) throws IOException, TimeoutException {

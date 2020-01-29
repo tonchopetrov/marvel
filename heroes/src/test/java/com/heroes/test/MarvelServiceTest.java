@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -48,7 +49,7 @@ public class MarvelServiceTest {
     private TranslatorService translatorService;
 
     @Before
-    public void setup() throws IOException, TimeoutException {
+    public void setup() throws IOException, TimeoutException, ExecutionException, InterruptedException {
         Mockito.when(translatorService.translate(BG_LANGUAGE_CODE,TRANSLATED_REQUEST)).thenReturn(TRANSLATED_RESULT);
     }
 

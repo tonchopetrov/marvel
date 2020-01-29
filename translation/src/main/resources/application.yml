@@ -1,6 +1,15 @@
 server:
   port: 8082
-  context-path: /api/marvel/translation
+  servlet:
+    context-path: /api/marvel/translation
+
+kafka:
+  bootstrap-servers: 127.0.0.1:9092
+  port: 9092
+  topics:
+    t1: t1
+    t2: t2
+  consumergroup: g1
 
 google:
   credentials:

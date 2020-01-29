@@ -1,6 +1,6 @@
 package ms_common.messaging.config;
 
-public class RabbitConstants {
+public class BrockerConstants {
 
     public static final String REQUEST_QUEUE_NAME = "hero_power_request_queue";
     public static final String REPLY_QUEUE_NAME = "hero_power_reply_queue";
